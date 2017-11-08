@@ -1,0 +1,1 @@
+/usr/bin/c++   -W -Wall -pedantic -std=c++11   CMakeFiles/neuron.dir/main.cpp.o CMakeFiles/neuron.dir/neuron.cpp.o  -o neuron -rdynamic 

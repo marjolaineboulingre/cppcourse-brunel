@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/INTRANET/boulingr/myfiles/neuron/main.cpp
+cassert
+-
+iostream
+-
+fstream
+-
+neuron.hpp
+/home/INTRANET/boulingr/myfiles/neuron/neuron.hpp
+
+/home/INTRANET/boulingr/myfiles/neuron/neuron.cpp
+iostream
+-
+cmath
+-
+neuron.hpp
+/home/INTRANET/boulingr/myfiles/neuron/neuron.hpp
+
+/home/INTRANET/boulingr/myfiles/neuron/neuron.hpp
+iostream
+-
+vector
+-
+
