@@ -10,7 +10,6 @@ namespace C {
 	const double h = 0.1;					///Time step
 	const double Vth = 20.0;				///Spike threshold
 	const double refractory_time = 2.0;		///Refractory time
-	//const double J = 1;						///Value of the current received if a neuron spikes
 	const double Je = 0.1;					///membrane potential for the background noise and for an excitatory neuron
 	const double Ji = -0.5;					///membrane potential for an inhibitory neuron
 	const unsigned long refractory_steps=20;///steps per refractory_time
@@ -34,7 +33,7 @@ namespace C {
 	
 	
 	///constants to run the simulation
-	const unsigned long time_simulation = 1000;
+	const unsigned long time_simulation = 5000;
 	
 }
 

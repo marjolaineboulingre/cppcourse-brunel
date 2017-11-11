@@ -11,7 +11,6 @@ Network::Network()
 	excitatories(0, C::n_excitatory - 1),
 	inhibitories(C::n_excitatory-1, C::n_total-1)
 {		
-		neurons_network.resize(C::n_total);
 		connections.resize(C::n_total);
 		
 		for(int i=0; i < C::n_total; ++i)
@@ -21,26 +20,22 @@ Network::Network()
 }
 
 
-
-
 void Network::createNetwork()
 {
-	for(auto i=0; i < C::n_excitatory; ++i)
+	///creation of the excitatories neurons
+	for(int i=0; i < C::n_excitatory; ++i)
 	{ 
 		Neuron n;
+		n.setJ(C::Je); 	///set the potential transmitted with the specific value for an excitatory neuron
 		neurons_network.push_back(n);
-		n.setIndex(neurons_network.size());
-		//n.setExcitatory(true);
-		n.setJ(C::Je);
 	}
 	
-	for(auto i=0 ; i < C::n_inhibitory; ++i)
+	///creatino of the inhibitories neuron
+	for(int i=C::n_inhibitory ; i < C::n_total; ++i)
 	{ 
-		Neuron n;
+		Neuron n;	
+		n.setJ(C::Ji);	///set the potential transmitted with the specific value for an inhibitory neuron
 		neurons_network.push_back(n);
-		n.setIndex(neurons_network.size());
-		//n.setExcitatory(false);	
-		n.setJ(C::Ji);
 	}
 }
 
@@ -65,29 +60,27 @@ void Network::createConnections() {
 }
 
 
-void Network::update(unsigned long t) {
-		
-	std::ofstream spikes;
-	spikes.open("../spikes.gdf", std::fstream::out| std::fstream::ate| std::fstream::app); 
+void Network::update(unsigned long t) {	
 	
-	for(auto n=0; n < C::n_total; ++n) 
+	for(int n=0; n < C::n_total; ++n) 
 	{
 		neurons_network[n].update(1);
 		
 		if ( neurons_network[n].isSpiking())
 		{
-			spikes << t <<'\t' << n << std::endl;	
+			spikes << t <<'\t' << n << std::endl;
+				
 			for(size_t i=0; i < connections[n].size(); ++i)
 			{
 				if(connections[n][i] > 0)
 				{
 					neurons_network[i].receive_spike(t, neurons_network[n].getPotentialTransmitted()*connections[n][i]);
 				}
-			}	
+			}
 		}
 	}
 	
-	spikes.close();
+	
 }
 
 
@@ -132,39 +125,19 @@ void Network::simulation(unsigned long time) {
 	
 	createNetwork();
 	createConnections();
+
+	std::cout << "start of the simulation" << std::endl;
+
+	spikes.open("../spikes.gdf"); 
 	
-	int progress(1);
-	int progress_rate(0.01*C::time_simulation);
-		
 	while(t < time) 
 	{
-		if(t > progress_rate) 
-		{
-			std::cout << progress << "%" << std::endl;
-			progress += 1;
-			progress_rate += 0.01*time;
-		}
-
-	update(t);
-		++t;
-		
+		update(t);
+		++t;	
 	}
+	
+	spikes.close();
+	
+	std::cout << "end of the simulation" << std::endl;
 }
 
-
-/*void Network::saveTimeSpikes() {
-		
-	std::ofstream spikes;
-	spikes.open("../spikes.gdf");
-	
-	for (int i = 0; i < neurons_network.size(); ++i )
-	{
-		std::vector<int> times (neurons_network[i].getTimesSpike());
-		
-		for (auto time : times)
-		{
-			spikes << times[time] << '\t' << i << '\n';		
-		}
-	}	
-	spikes.close();
-}*/

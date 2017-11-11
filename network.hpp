@@ -9,9 +9,7 @@
 
 
 /*! \brief class representing a Network
- * 	
  * Handles all the neurons of the network and the connections
- * 
  */ 
 
 class Network {
@@ -21,6 +19,7 @@ class Network {
 		std::vector<Neuron> neurons_network;				///represents all the neurons of the network
 		std::vector<std::vector<int>> connections;			///represents all the connections between the neurons in the network		
 	
+		std::ofstream spikes;								///ofstream file that stores of the times spiking of the neurons
 		
 		///to generate the connections between differents neurons
 		std::random_device rd;
@@ -34,9 +33,7 @@ class Network {
 		 *
 		 *  Initializes a new network
 		 *  Resizes the vectors with the total number of neurons of the network
-		 * 
-		 */
-			
+		 */	
 		Network();
 		
 		///default destructor
@@ -85,7 +82,10 @@ class Network {
 		/*! \brief run the simulation
 		 * 
 		 *  Creates a network and the connections associated to it
-		 * 	Updates the network at each time step until it reaches the end of the time simulation
+		 * 	Updates the network at each time step until it reaches the end of the time simulation:
+		 * 	each neuron of the network will be updated,
+		 * 	their connections will be handle
+		 * 	their time spiking is saved
 		 * 	
 		 * \param time		duration of the simulation
 		 * 

@@ -10,6 +10,8 @@
 #include "Constants.hpp"
 
 	
+/*! \brief class representing a neuron
+ */ 
 	
 class Neuron {
 	
@@ -25,12 +27,9 @@ class Neuron {
 		std::vector<double> potential_historical;	///historical of the mebrane potential
 		std::vector<int> times_historical;			///historical of the times spikes
 		std::vector<double> spike_buff;				///Input buffer for spikes
-		
-		//bool isExcitatory;							///defines the type of the neuron (excitatory or inhibitory)
-		double J;
-		bool poissonActivated;
-		
-		size_t index;
+
+		double J;									///Potential transmitted by the neuron when it spikes
+		bool poissonActivated;						///Boolean for the activation of the background noise
 	
 	
 	
@@ -38,7 +37,10 @@ class Neuron {
 	
 		/*! \brief Neuron constructor
 		 *
-		 *  Initializes a neuron with 
+		 *  Initializes a neuron with its membrane potential, external current, 
+		 * 	number of spikes, potential transmitted and colck at 0
+		 * 	Initializes the poissonActivated at true to be able to generate the background noise
+		 *  Resizes the buffer for the spikes
 		 */
 		Neuron();
 		
@@ -48,31 +50,33 @@ class Neuron {
 		
 		///getters
 		
-		///get the neuron's membrane potential 
+		/*! \return neuron's membrane potential  
+		 */  
 		double getMembranePotential() const;
 		
-		///get the external current
+		/*! \return external current
+		 */
 		double getExtCurrent() const;
 		
-		///get the neuron's last time spike
+		/*! \return neuron's last time spike
+		 */
 		unsigned long getLastTimeSpike() const;
 		
-		///get the neuron's clock
+		/*! \return neuron's clock
+		 */
 		unsigned long getClock() const;
 		
-		///get the delay
-		double getDelay() const;
-		
-		///get the number of times the neuron has spiked
-		int getNbrSpikes() const;
-		
-		/*! \brief get the neuron's type
-		 *
-		 * 	Return true if it's excitatory, false if it's inhibitory 
-		 * 
+		/*! \return delay
 		 */
-		//bool getIsExcitatory() const;
+		 double getDelay() const;
 		
+		/*! \return delay_steps
+		 */
+		 unsigned long getDelaySteps() const;
+		
+		/*! \return number of times the neuron has spiked
+		 */
+		int getNbrSpikes() const;		
 		
 		/*! \brief get the potential transmitted to the neuron targeted after a spike is emitted
 		 * 
@@ -83,41 +87,43 @@ class Neuron {
 		 * 
 		 */
 		double getPotentialTransmitted() const;
-		
-		/*! \brief get all the times when the neuron spikes
-		 * 
-		 * 	Returns a vector filled with all the times spike of the neuron
-		 * 
-		 */ 
-		//std::vector<int> getTimesSpike() const;
 
 		
 		///setters
 		
+		/*! \brief set the value of the current
+		 */
 		void setJ(double i);
 		
+		/*! \brief set the value of the neuron's membrane potential
+		 */
 		void setMembranePotential(double mem_pot);
 		
+		/*! \brief set the external current
+		 */
 		void setExtCurrent(double c);
 		
-		void setIndex(size_t ind);
+		/*! \brief set the index of the neuron
+		 */
 		
-		//void setExcitatory(bool c);
-		
+		/*! \brief set the value of poissonActivated
+		 * 	
+		 * 	if it is at false it will destroy the background noise
+		 */
 		void setPoisson(bool b);
 		
 		/*! \brief Tests if the neuron spikes
 		 * 
-		 * 	Returns true if the neuron's membrane potential has reached the threshold
+		 * 	\return true if the neuron's membrane potential has reached the threshold
 		 * 
 		 */
 		bool isSpiking() const;						
 		
 		/*! \brief Tests if the neuron is refractory
 		 * 
-		 * 	Returns a boolean to say if the neuron is refractory or not:
-		 * 	returns true if the refractory time has been trespassed,
-		 * 	returns false otherwise
+		 * 	\return a boolean to say if the neuron is refractory or not:
+		 * 	true if the refractory time has been trespassed,
+		 * 	false otherwise
 		 * 
 		 * \param c				time when we test if the refractory time has been reached	
 		 */
@@ -128,16 +134,16 @@ class Neuron {
 		 * 	Computes the new neuron's membrane potential according to the general formula
 		 * 	Adds random background noise
 		 * 	Adds transmitted potential from the ring buffer
-		 * 
 		 */
-		void updatePotential();
-		
-		
+		void updatePotential();	
 		 
 		 /*! \brief Updates the neuron
 		  *	 
 		  *  Updates the neuron's membrane potential 
+		  *  and store the new potential in the historical of the potentials
 		  *  If the neuron is spiking, stores the time when it spikes in the times_historical vector
+		  *  and increases the number of spikes of the neuron
+		  *  Reinitializes the buffer
 		  * 
 		  * \param steps		determines how many times the function needs to update the neuron
 		  * 
@@ -159,6 +165,7 @@ class Neuron {
 		/*! \brief convert a time in ms in steps
 		 * 
 		 *  \param c 		time that need to be convert in steps
+		 * 	\return			the time converted in steps 
 		 */ 
 		double convertMs(unsigned long c); 					
 		

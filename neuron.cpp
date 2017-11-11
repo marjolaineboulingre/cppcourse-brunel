@@ -13,17 +13,13 @@ Neuron::Neuron()
 	t_spike(0),
 	n_spikes(0),
 	clock(0),
-	spike_buff(),
-	times_historical(0),
 	J(0), 
 	poissonActivated(true)	
 	
 {
 	delay_steps = static_cast<unsigned long>(ceil(C::delay/C::h));
 	spike_buff.resize(delay_steps+1, 0.0);
-	times_historical.resize(0);
-
-		
+	times_historical.resize(0);	
 	assert(spike_buff.size() == delay_steps + 1);
 }
 	
@@ -58,18 +54,13 @@ int Neuron::getNbrSpikes() const {
 }
 
 
-/*bool Neuron::getIsExcitatory() const  {
-	return isExcitatory;
-}*/
-
 double Neuron::getPotentialTransmitted() const {
 	return J;
 }
 
-/*std::vector<int> Neuron::getTimesSpike() const {
-	return times_historical;
-}*/
-
+unsigned long Neuron::getDelaySteps() const {
+	return delay_steps;
+}
 
 ///setters
 		
@@ -81,13 +72,15 @@ void Neuron::setExtCurrent(double c) {
 	Iext = c;
 }	
 
-void Neuron::setIndex(size_t ind) {
-	index = ind;
+void Neuron::setJ(double i) {
+	J = i;
 }
 
-/*void Neuron::setExcitatory(bool c) {
-	isExcitatory = c;
-}*/
+void Neuron::setPoisson(bool b) {
+	poissonActivated = b;
+}
+
+
 	
 ///methods concerning the state of the neuron
 
@@ -109,9 +102,9 @@ void Neuron::updatePotential() {
 		membrane_potential += spike_buff[clock % delay_steps];
 		
 		///generate the background noise
-		random_device rd;
-		mt19937 gen(rd());
-		poisson_distribution<> poisson(2);
+		static random_device rd;
+		static mt19937 gen(rd());
+		static poisson_distribution<> poisson(2);
 		
 		membrane_potential += poisson(gen) *C::Je*poissonActivated;
 }
@@ -155,14 +148,4 @@ void Neuron::receive_spike(unsigned long arrival, double potential) {
 
 double Neuron::convertMs(unsigned long c) {
 	return c*C::h;
-}
-
-
-void Neuron::setJ(double i) {
-	J = i;
-}
-
-
-void Neuron::setPoisson(bool b) {
-	poissonActivated = b;
 }
